@@ -1,4 +1,4 @@
-export interface IUserModel {
+export interface ICreateUserDTO {
   name: string;
   username: string;
   email: string;
