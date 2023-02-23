@@ -62,8 +62,13 @@ export class UserRepository implements IUserRepository {
     const user = await UserModel.find({});
     return user;
   }
-  findById(id: string): Promise<IUserModel> {
-    throw new Error("Method not implemented.");
+  async findById(id: string): Promise<IUserModel> {
+    const user = await UserModel.findById({ _id: id }, { password: 0 });
+    if (!user) {
+      throw new AppError("Usuario não encontrado", 404);
+    }
+
+    return user;
   }
   async findByEmail(email: string): Promise<IUserModel> {
     const user = await UserModel.findOne({ email: email });
