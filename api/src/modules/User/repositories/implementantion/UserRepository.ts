@@ -52,8 +52,22 @@ export class UserRepository implements IUserRepository {
     };
     return tokenResponse;
   }
-  update(data: ICreateUserDTO): Promise<IUserModel> {
-    throw new Error("Method not implemented.");
+  async update(data: ICreateUserDTO, id: string): Promise<IUserModel> {
+    const user = await UserModel.findById({ _id: id });
+    if (!user) {
+      throw new AppError("Usuario não encontrado", 404);
+    }
+    const userUpdate = await UserModel.findByIdAndUpdate(
+      id,
+      {
+        $set: data,
+      },
+      { new: true }
+    );
+    console.log(userUpdate);
+
+    const { password, ...other } = userUpdate?._doc as ICreateUserDTO;
+    return other as IUserModel;
   }
   softDeleteUser(id: string): Promise<msg> {
     throw new Error("Method not implemented.");

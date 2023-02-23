@@ -19,7 +19,7 @@ export interface IReponse {
 export interface IUserRepository {
   register(data: ICreateUserDTO): Promise<IUserModel>;
   login(email: string, password: string): Promise<IReponse>;
-  update(data: ICreateUserDTO): Promise<IUserModel>;
+  update(data: ICreateUserDTO, id: string): Promise<IUserModel>;
   softDeleteUser(id: string): Promise<msg>;
   getAll(parmas: params): Promise<IUserModel[]>;
   findByEmail(email: string): Promise<IUserModel>;
