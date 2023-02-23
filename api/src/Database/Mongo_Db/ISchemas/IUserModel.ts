@@ -6,6 +6,6 @@ export interface IUserModel {
   password?: string;
   photoUrl: string;
   typeUser: string;
-  status: string;
+  status: boolean;
   _doc?: object;
 }

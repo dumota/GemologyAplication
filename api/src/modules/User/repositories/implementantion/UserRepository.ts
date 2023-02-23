@@ -1,6 +1,6 @@
 import { IUserModel } from "../../../../Database/Mongo_Db/ISchemas/IUserModel";
 import { ICreateUserDTO } from "../../dtos/ICreateUserDTO";
-import { IReponse, IUserRepository, msg } from "../IUserRepository";
+import { IReponse, IUserRepository } from "../IUserRepository";
 import UserModel from "../../../../Database/Mongo_Db/schemas/UserModel";
 import { AppError } from "../../../../errors/AppError";
 import { compare } from "bcrypt";
@@ -69,11 +69,22 @@ export class UserRepository implements IUserRepository {
     const { password, ...other } = userUpdate?._doc as ICreateUserDTO;
     return other as IUserModel;
   }
-  softDeleteUser(id: string): Promise<msg> {
-    throw new Error("Method not implemented.");
+  async softDeleteUser(id: string): Promise<string> {
+    const user = await UserModel.findById({ _id: id });
+    if (!user) {
+      throw new AppError("Usuario não encontrado!", 404);
+    }
+
+    await user.updateOne({ status: !user.status });
+
+    const message = user.status
+      ? "Usuario Inativado com sucesso!"
+      : "Usuario ativo com sucesso!";
+    return message as string;
   }
   async getAll(): Promise<IUserModel[]> {
-    const user = await UserModel.find({});
+    const user = await UserModel.find();
+
     return user;
   }
   async findById(id: string): Promise<IUserModel> {
