@@ -5,11 +5,23 @@ export interface msg {
   msg: string;
 }
 
+export interface params {
+  name?: string;
+}
+export interface IReponse {
+  user: {
+    name: string;
+    email: string;
+  };
+  token: string;
+}
+
 export interface IUserRepository {
-  create(data: ICreateUserDTO): Promise<IUserModel>;
+  register(data: ICreateUserDTO): Promise<IUserModel>;
+  login(email: string, password: string): Promise<IReponse>;
   update(data: ICreateUserDTO): Promise<IUserModel>;
   softDeleteUser(id: string): Promise<msg>;
-  getAll(): Promise<IUserModel[]>;
+  getAll(parmas: params): Promise<IUserModel[]>;
   findByEmail(email: string): Promise<IUserModel>;
   findById(id: string): Promise<IUserModel>;
 }

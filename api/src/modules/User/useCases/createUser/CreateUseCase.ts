@@ -20,9 +20,9 @@ export class CreateUserUseCase {
       throw new AppError("Usuario ja existe");
     }
 
-    // const passwordHash = await hash(data.password, 8);
-    // data.password = passwordHash;
-    // const user = await this._userRepository.create(data);
-    // return user;
+    const passwordHash = await hash(data.password, 8);
+    data.password = passwordHash;
+    const user = await this._userRepository.register(data);
+    return user;
   }
 }

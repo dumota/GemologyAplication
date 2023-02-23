@@ -4,6 +4,4 @@ export interface ICreateUserDTO {
   email: string;
   password: string;
   photoUrl: string;
-  typeUser: string;
-  status: string;
 }
