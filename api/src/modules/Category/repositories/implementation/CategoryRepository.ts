@@ -35,7 +35,11 @@ export class CategoryRepository implements ICategoryRepository {
     const category = await CategoryModel.findOne({ name: name });
     return category as ICategoryModel;
   }
-  delete(id: string): Promise<string> {
-    throw new Error("Method not implemented.");
+  async delete(id: string): Promise<string> {
+    const deletedCategory = await CategoryModel.findByIdAndDelete({ _id: id });
+
+    const msg = "Categoria excluida com sucesso";
+
+    return msg;
   }
 }
