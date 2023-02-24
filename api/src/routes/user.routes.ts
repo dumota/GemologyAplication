@@ -5,7 +5,7 @@ import { GetAllUsersController } from "../modules/User/useCases/getAllUsers/GetA
 import { LoginUserController } from "../modules/User/useCases/loginUser/LoginUserController";
 import { UserSoftDeleteController } from "../modules/User/useCases/softDelete/UserSoftDeleteController";
 import { UpdateUserController } from "../modules/User/useCases/updateUser/UpdateUserController";
-import { UploadImageController } from "../modules/User/useCases/uploadImage/UploadImageController";
+import { UploadImageController } from "../modules/uploadImage/UploadImageController";
 import { ensureAdmin } from "../shared/middlewares/ensureAdmin";
 import { ensureAutheticated } from "../shared/middlewares/ensureAuthenticated";
 import multer from "multer";

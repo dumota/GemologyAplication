@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { AppError } from "../../../../errors/AppError";
-import { UploadFile } from "../../../../shared/providers/UploadFile";
+import { AppError } from "../../errors/AppError";
+import { UploadFile } from "../../shared/providers/UploadFile";
 
 export class UploadImageController {
   async handle(req: Request, res: Response) {
@@ -10,6 +10,6 @@ export class UploadImageController {
     }
     const uploadFile = new UploadFile();
     const result = await uploadFile.uploadPhoto(photo);
-    console.log(result);
+    res.status(201).json(result);
   }
 }
