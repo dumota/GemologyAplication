@@ -19,4 +19,10 @@ export class FieldValidation {
       );
     }
   }
+
+  async postIsFromUser(data: IPostDTO, id: string): Promise<void> {
+    if (data.user != id) {
+      throw new AppError("Você só pode atualizar posts que são seus!");
+    }
+  }
 }

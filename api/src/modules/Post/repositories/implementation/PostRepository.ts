@@ -15,8 +15,16 @@ export class PostRepository implements IPostRepository {
     await newPost.save();
     return newPost;
   }
-  update(data: IPostDTO): Promise<IPostModel> {
-    throw new Error("Method not implemented.");
+  async update(data: IPostDTO): Promise<IPostModel | any> {
+    const postUpdate = await PostModel.findByIdAndUpdate(
+      data._id,
+      {
+        $set: data,
+      },
+      { new: true }
+    );
+
+    return postUpdate as IPostModel;
   }
   softDelete(id: string): string {
     throw new Error("Method not implemented.");
