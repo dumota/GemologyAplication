@@ -1,5 +1,7 @@
+import { json } from "body-parser";
 import { IPostModel } from "../../../../Database/Mongo_Db/ISchemas/IPostModel";
 import PostModel from "../../../../Database/Mongo_Db/schemas/PostModel";
+import { AppError } from "../../../../errors/AppError";
 import { IPostDTO } from "../../dtos/IPostDTO";
 import { IPostRepository } from "../IPostRepository";
 
@@ -29,8 +31,43 @@ export class PostRepository implements IPostRepository {
   softDelete(id: string): string {
     throw new Error("Method not implemented.");
   }
-  getRandomPostWithUser(): Promise<IPostModel[]> {
-    throw new Error("Method not implemented.");
+  async getRandomPostWithUser(): Promise<IPostModel[]> {
+    try {
+      const posts = await PostModel.aggregate([
+        //user
+        {
+          $lookup: {
+            from: "users",
+            let: { user_id: "$user" },
+            pipeline: [
+              { $match: { $expr: { $eq: ["$_id", "$$user_id"] } } },
+              { $project: { password: 0 } },
+            ],
+            as: "user",
+          },
+        },
+
+        //array -> obejct
+        { $unwind: "$user" },
+
+        //Category
+        {
+          $lookup: {
+            from: "categories",
+            localField: "category",
+            foreignField: "_id",
+            as: "category",
+          },
+        },
+        //array -> object
+        { $unwind: "$category" },
+        { $match: { $expr: { $lt: [0.5, { $rand: {} }] } } },
+      ]);
+
+      return posts;
+    } catch (err: any) {
+      throw new Error(err);
+    }
   }
   getByIdWithUser(id: string): Promise<IPostModel> {
     throw new Error("Method not implemented.");
