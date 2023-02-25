@@ -14,7 +14,7 @@ const postSchema = new moongoose.Schema(
     content: {
       type: String,
       require: true,
-      minLength: 2000,
+      minLength: 6,
     },
     description: {
       type: String,
