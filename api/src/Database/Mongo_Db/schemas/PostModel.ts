@@ -1,4 +1,5 @@
 import moongoose from "mongoose";
+import { IPostModel } from "../ISchemas/IPostModel";
 
 const postSchema = new moongoose.Schema(
   {
@@ -42,4 +43,4 @@ const postSchema = new moongoose.Schema(
   }
 );
 
-export default moongoose.model("Post", postSchema);
+export default moongoose.model<IPostModel>("Post", postSchema);
