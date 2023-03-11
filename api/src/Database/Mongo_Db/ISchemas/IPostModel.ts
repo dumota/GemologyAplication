@@ -8,5 +8,5 @@ export interface IPostModel {
   likes?: string[];
   status: boolean;
   avaliation: boolean;
-  _doc: object;
+  _doc?: object;
 }

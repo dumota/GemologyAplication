@@ -9,5 +9,5 @@ export interface IPostRepository {
   getByIdWithUser(id: string): Promise<IPostModel>;
   getPostsByUser(id: string): Promise<IPostModel[]>;
   updateAvaliation(id: string): Promise<IPostModel>;
-  postLike(data: IPostDTO): Promise<IPostModel>;
+  postLike(id:string,user_id:string): Promise<IPostModel>;
 }

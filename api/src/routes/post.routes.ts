@@ -4,6 +4,7 @@ import { PostRepository } from "../modules/Post/repositories/implementation/Post
 import { CreatePostController } from "../modules/Post/useCases/createPost/CreatePostController";
 import { GetPostsByUserController } from "../modules/Post/useCases/getPostsByUser/GetPostsByUserController";
 import { GetRandomPostsController } from "../modules/Post/useCases/getRandomPostWithUser/GetRandomPostsController";
+import { PostLikeController } from "../modules/Post/useCases/PostLike/PostLikeController";
 import { SoftDeleteController } from "../modules/Post/useCases/softDeleteUseCase/SoftDeleteController";
 import { UpdatePostController } from "../modules/Post/useCases/updatePost/UpdatePostController";
 import { UserRepository } from "../modules/User/repositories/implementantion/UserRepository";
@@ -17,10 +18,12 @@ const updatePostController = new UpdatePostController();
 const getRandomPostsController = new GetRandomPostsController();
 const getPostsByUserController = new GetPostsByUserController();
 const softDeleteController = new SoftDeleteController();
+const postLikeController = new PostLikeController();
 
 postRoutes.post("/", ensureAutheticated, createPostController.handle);
 postRoutes.put("/", ensureAutheticated, updatePostController.handle);
 postRoutes.put("/:id", ensureAutheticated, ensureAdmin,softDeleteController.handle);
+postRoutes.put("/like/:id", ensureAutheticated,postLikeController.handle);
 
 
 postRoutes.get("/", getRandomPostsController.handle);

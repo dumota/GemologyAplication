@@ -17,6 +17,8 @@ export class PostRepository implements IPostRepository {
     await newPost.save();
     return newPost;
   }
+
+
   async update(data: IPostDTO): Promise<IPostModel | any> {
     const postUpdate = await PostModel.findByIdAndUpdate(
       data._id,
@@ -28,6 +30,8 @@ export class PostRepository implements IPostRepository {
 
     return postUpdate as IPostModel;
   }
+
+
   async softDelete(id: string): Promise<string> {
     const post = await PostModel.findById({ _id: id });
  
@@ -42,6 +46,8 @@ export class PostRepository implements IPostRepository {
       : "Post ativo com sucesso!";
     return message as string;
   }
+
+
   async getRandomPostWithUser(): Promise<IPostModel[]> {
     try {
       const posts = await PostModel.aggregate([
@@ -80,17 +86,58 @@ export class PostRepository implements IPostRepository {
       throw new Error(err);
     }
   }
+
+
   getByIdWithUser(id: string): Promise<IPostModel> {
     throw new Error("Method not implemented.");
   }
+
+
   async getPostsByUser(id: string): Promise<IPostModel[]> {
     const postsByUser = await PostModel.find({user:id})
     return postsByUser;
   }
+
   updateAvaliation(id: string): Promise<IPostModel> {
     throw new Error("Method not implemented.");
   }
-  postLike(data: IPostDTO): Promise<IPostModel> {
-    throw new Error("Method not implemented.");
+
+  async postLike(id: string, user_id:string): Promise<IPostModel|any> {
+    try {
+      
+      const isLiked = await PostModel.find({_id:id, likes:user_id})
+      console.log(isLiked);
+      
+      if(isLiked.length <= 0){
+        const likedBlog = await PostModel.findByIdAndUpdate({_id:id},
+          {
+            $push:{likes: user_id}
+          },
+          {
+            new:true
+          }
+        )
+
+        return likedBlog;
+      }else{
+        const deslikeBlog = await PostModel.findByIdAndUpdate({_id:id},
+          {
+            $pull:{likes: user_id}
+          },
+          {
+            new:true
+          }
+        )
+        return deslikeBlog;
+      }
+
+
+      
+
+
+    } catch (error) {
+      console.log(error);
+      
+    }
   }
 }
