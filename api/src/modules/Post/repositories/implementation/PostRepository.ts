@@ -28,8 +28,19 @@ export class PostRepository implements IPostRepository {
 
     return postUpdate as IPostModel;
   }
-  softDelete(id: string): string {
-    throw new Error("Method not implemented.");
+  async softDelete(id: string): Promise<string> {
+    const post = await PostModel.findById({ _id: id });
+ 
+    if (!post) {
+      throw new AppError("Post Não encontrado!", 404);
+    }
+
+    await post.updateOne({ status: !post.status });
+
+    const message = post.status
+      ? "Post Inativado com sucesso!"
+      : "Post ativo com sucesso!";
+    return message as string;
   }
   async getRandomPostWithUser(): Promise<IPostModel[]> {
     try {
