@@ -98,16 +98,15 @@ export class PostRepository implements IPostRepository {
     return postsByUser;
   }
 
-  updateAvaliation(id: string): Promise<IPostModel> {
-    throw new Error("Method not implemented.");
+  async updateAvaliation(id: string): Promise<IPostModel> {
+    const post = await PostModel.findByIdAndUpdate({_id:id},{avaliation:true},{new:true})
+    return post as IPostModel;
   }
 
   async postLike(id: string, user_id:string): Promise<IPostModel|any> {
     try {
       
-      const isLiked = await PostModel.find({_id:id, likes:user_id})
-      console.log(isLiked);
-      
+      const isLiked = await PostModel.find({_id:id, likes:user_id})  
       if(isLiked.length <= 0){
         const likedBlog = await PostModel.findByIdAndUpdate({_id:id},
           {

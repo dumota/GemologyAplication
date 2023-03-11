@@ -1,6 +1,7 @@
 import { json } from "body-parser";
 import { Router } from "express";
 import { PostRepository } from "../modules/Post/repositories/implementation/PostRepository";
+import { AvaliationController } from "../modules/Post/useCases/avaliation/AvaliationController";
 import { CreatePostController } from "../modules/Post/useCases/createPost/CreatePostController";
 import { GetPostsByUserController } from "../modules/Post/useCases/getPostsByUser/GetPostsByUserController";
 import { GetRandomPostsController } from "../modules/Post/useCases/getRandomPostWithUser/GetRandomPostsController";
@@ -19,11 +20,14 @@ const getRandomPostsController = new GetRandomPostsController();
 const getPostsByUserController = new GetPostsByUserController();
 const softDeleteController = new SoftDeleteController();
 const postLikeController = new PostLikeController();
+const avaliationController = new AvaliationController();
 
 postRoutes.post("/", ensureAutheticated, createPostController.handle);
+
 postRoutes.put("/", ensureAutheticated, updatePostController.handle);
 postRoutes.put("/:id", ensureAutheticated, ensureAdmin,softDeleteController.handle);
 postRoutes.put("/like/:id", ensureAutheticated,postLikeController.handle);
+postRoutes.put("/available/:id", ensureAutheticated, ensureAdmin,avaliationController.handle);
 
 
 postRoutes.get("/", getRandomPostsController.handle);
