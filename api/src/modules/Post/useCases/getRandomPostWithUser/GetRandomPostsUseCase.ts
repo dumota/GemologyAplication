@@ -10,7 +10,6 @@ export class GetRandomPostsUseCase {
 
   async execute() {
     const posts = await this._postRepository.getRandomPostWithUser();
-
     return posts;
   }
 }

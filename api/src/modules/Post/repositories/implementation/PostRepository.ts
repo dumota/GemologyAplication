@@ -72,8 +72,9 @@ export class PostRepository implements IPostRepository {
   getByIdWithUser(id: string): Promise<IPostModel> {
     throw new Error("Method not implemented.");
   }
-  getPostsByUser(id: string): Promise<IPostModel[]> {
-    throw new Error("Method not implemented.");
+  async getPostsByUser(id: string): Promise<IPostModel[]> {
+    const postsByUser = await PostModel.find({user:id})
+    return postsByUser;
   }
   updateAvaliation(id: string): Promise<IPostModel> {
     throw new Error("Method not implemented.");
