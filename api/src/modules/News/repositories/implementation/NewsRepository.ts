@@ -32,8 +32,10 @@ export class NewsRepository implements INewsRepository {
         return newsData as INewsModel;
     }
 
-    delete(id: string): Promise<string> {
-        throw new Error("Method not implemented.");
+    async delete(id: string): Promise<string> {
+        await NewsModel.findByIdAndDelete({ _id: id })
+        const msg = 'Noticia excluida com sucesso!'
+        return msg;
     }
 
     async getAll(): Promise<INewsModel[]> {
