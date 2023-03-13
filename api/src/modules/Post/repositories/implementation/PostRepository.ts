@@ -1,5 +1,5 @@
 import { json } from "body-parser";
-import  mongoose  from "mongoose";
+import mongoose from "mongoose";
 import { IPostModel } from "../../../../Database/Mongo_Db/ISchemas/IPostModel";
 import PostModel from "../../../../Database/Mongo_Db/schemas/PostModel";
 import { AppError } from "../../../../errors/AppError";
@@ -35,7 +35,7 @@ export class PostRepository implements IPostRepository {
 
   async softDelete(id: string): Promise<string> {
     const post = await PostModel.findById({ _id: id });
- 
+
     if (!post) {
       throw new AppError("Post Não encontrado!", 404);
     }
@@ -89,7 +89,7 @@ export class PostRepository implements IPostRepository {
   }
 
 
- 
+
 
 
   async getPostsByUser(id: string): Promise<IPostModel[]> {
@@ -99,87 +99,86 @@ export class PostRepository implements IPostRepository {
     const data = await PostModel.aggregate([
       {
         $facet: {
-            totalData: [
-                { $match: { user: mongoose.Types.ObjectId(id) } },
-                {
-                    $lookup: {
-                        from: 'users',
-                        let: { user_id: "$user" },
-                        pipeline: [
-                            { $match: { $expr: { $eq: ["$_id", "$$user_id"] } } },
-                            { $project: { password: 0 } }
-                        ],
-                        as: "user"
-                    }
-                },
-                { $unwind: "$user" },
-                { $sort: { createdAt: -1 } },
-               
-            ],
-            totalCount: [
-                {
-                    $match:
-                    {
-                        user: mongoose.Types.ObjectId(id)
-                    }
-                },
-                { $count: 'count' }
+          totalData: [
+            { $match: { user: mongoose.Types.ObjectId(id) } },
+            {
+              $lookup: {
+                from: 'users',
+                let: { user_id: "$user" },
+                pipeline: [
+                  { $match: { $expr: { $eq: ["$_id", "$$user_id"] } } },
+                  { $project: { password: 0 } }
+                ],
+                as: "user"
+              }
+            },
+            { $unwind: "$user" },
+            { $sort: { createdAt: -1 } },
 
-            ]
+          ],
+          totalCount: [
+            {
+              $match:
+              {
+                user: mongoose.Types.ObjectId(id)
+              }
+            },
+            { $count: 'count' }
+
+          ]
         }
+      },
 
-    },
-
-    {
+      {
         $project: {
-            count: { $arrayElemAt: ["$totalCount.count", 0] },
-            totalData: 1
+          count: { $arrayElemAt: ["$totalCount.count", 0] },
+          totalData: 1
         }
-    }
+      }
     ])
 
     return data;
   }
 
   async updateAvaliation(id: string): Promise<IPostModel> {
-    const post = await PostModel.findByIdAndUpdate({_id:id},{avaliation:true},{new:true})
+    const post = await PostModel.findByIdAndUpdate({ _id: id }, { avaliation: true }, { new: true })
     return post as IPostModel;
   }
 
-  async postLike(id: string, user_id:string): Promise<IPostModel|any> {
+  async postLike(id: string, user_id: string): Promise<IPostModel | any> {
     try {
-      
-      const isLiked = await PostModel.find({_id:id, likes:user_id})  
-      if(isLiked.length <= 0){
-        const likedBlog = await PostModel.findByIdAndUpdate({_id:id},
+
+      const isLiked = await PostModel.find({ _id: id, likes: user_id })
+      if (isLiked.length <= 0) {
+        const likedBlog = await PostModel.findByIdAndUpdate({ _id: id },
           {
-            $push:{likes: user_id}
+            $push: { likes: user_id }
           },
           {
-            new:true
+            new: true
           }
         )
 
         return likedBlog;
-      }else{
-        const deslikeBlog = await PostModel.findByIdAndUpdate({_id:id},
+      } else {
+        const deslikeBlog = await PostModel.findByIdAndUpdate({ _id: id },
           {
-            $pull:{likes: user_id}
+            $pull: { likes: user_id }
           },
           {
-            new:true
+            new: true
           }
         )
         return deslikeBlog;
       }
 
 
-      
+
 
 
     } catch (error) {
       console.log(error);
-      
+
     }
   }
 }
