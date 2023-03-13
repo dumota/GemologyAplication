@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { INewsModel } from "../../../../Database/Mongo_Db/ISchemas/INewsModel";
 import NewsModel from "../../../../Database/Mongo_Db/schemas/NewsModel";
 import { INewsRepository } from "../INewsRepository";
@@ -40,8 +41,39 @@ export class NewsRepository implements INewsRepository {
 
         return ALLNotices;
     }
-    getById(id: string): Promise<INewsModel[]> {
-        throw new Error("Method not implemented.");
+    async getById(id: string): Promise<INewsModel[]> {
+        const data = await NewsModel.aggregate([
+            {
+                $facet: {
+                    totalData: [
+
+                        {
+                            $match: {
+                                _id: mongoose.Types.ObjectId(id)
+                            }
+                        },
+                        // User
+                        {
+                            $lookup: {
+                                from: "users",
+                                let: { user_id: "$createdBy" },
+                                pipeline: [
+                                    { $match: { $expr: { $eq: ["$_id", "$$user_id"] } } },
+                                    { $project: { password: 0 } }
+                                ],
+                                as: "user"
+                            }
+                        },
+                        // array -> object
+                        { $unwind: "$user" },
+
+
+                    ],
+                }
+            }
+        ])
+
+        return data;
     }
 
 }
