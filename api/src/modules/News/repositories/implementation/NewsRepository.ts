@@ -16,12 +16,26 @@ export class NewsRepository implements INewsRepository {
         await createNews.save();
         return createNews as INewsModel;
     }
-    update(data: INewsModel): Promise<INewsModel> {
-        throw new Error("Method not implemented.");
+
+    async update(data: INewsModel): Promise<INewsModel> {
+
+        const newsData = await NewsModel.findByIdAndUpdate(
+            data._id,
+            {
+                $set: data,
+            },
+            { new: true }
+        );
+
+
+
+        return newsData as INewsModel;
     }
+
     delete(id: string): Promise<string> {
         throw new Error("Method not implemented.");
     }
+
     async getAll(): Promise<INewsModel[]> {
         const ALLNotices = await NewsModel.aggregate([
 
@@ -41,6 +55,7 @@ export class NewsRepository implements INewsRepository {
 
         return ALLNotices;
     }
+
     async getById(id: string): Promise<INewsModel[]> {
         const data = await NewsModel.aggregate([
             {
