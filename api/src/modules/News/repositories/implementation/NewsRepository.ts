@@ -21,8 +21,24 @@ export class NewsRepository implements INewsRepository {
     delete(id: string): Promise<string> {
         throw new Error("Method not implemented.");
     }
-    getAll(): Promise<INewsModel[]> {
-        throw new Error("Method not implemented.");
+    async getAll(): Promise<INewsModel[]> {
+        const ALLNotices = await NewsModel.aggregate([
+
+            {
+                $lookup: {
+                    from: "users",
+                    let: { user_id: "$createdBy" },
+                    pipeline: [
+                        { $match: { $expr: { $eq: ["$_id", "$$user_id"] } } },
+                        { $project: { password: 0 } }
+                    ],
+                    as: "user"
+                }
+            },
+
+        ])
+
+        return ALLNotices;
     }
     getById(id: string): Promise<INewsModel[]> {
         throw new Error("Method not implemented.");

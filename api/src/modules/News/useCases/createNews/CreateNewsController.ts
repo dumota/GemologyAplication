@@ -8,10 +8,10 @@ export class CreateNewsController {
     async handle(req: Request, res: Response) {
         const createNewsUseCase = container.resolve(CreateNewsUseCase);
         const newsData = req.body
-        const idUser = req.user.id
-        console.log(idUser);
+        const createdBy = req.user.id
 
-        const data = { ...newsData, idUser };
+
+        const data = { ...newsData, createdBy };
         const result = await createNewsUseCase.execute(data)
         res.status(201).json(result);
 
