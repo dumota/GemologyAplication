@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { INewsModel } from "../ISchemas/INewsModel";
 
 const newsSchema = new mongoose.Schema(
   {
@@ -24,4 +25,4 @@ const newsSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model("News", newsSchema);
+export default mongoose.model<INewsModel>("News", newsSchema);
