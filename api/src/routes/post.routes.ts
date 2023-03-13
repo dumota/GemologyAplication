@@ -22,6 +22,7 @@ const softDeleteController = new SoftDeleteController();
 const postLikeController = new PostLikeController();
 const avaliationController = new AvaliationController();
 
+
 postRoutes.post("/", ensureAutheticated, createPostController.handle);
 
 postRoutes.put("/", ensureAutheticated, updatePostController.handle);
@@ -32,5 +33,6 @@ postRoutes.put("/available/:id", ensureAutheticated, ensureAdmin,avaliationContr
 
 postRoutes.get("/", getRandomPostsController.handle);
 postRoutes.get("/:id",getPostsByUserController.handle);
+
 
 export { postRoutes };

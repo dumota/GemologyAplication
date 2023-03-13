@@ -6,7 +6,6 @@ export interface IPostRepository {
   update(data: IPostDTO): Promise<IPostModel>;
   softDelete(id: string): Promise<string>;
   getRandomPostWithUser(): Promise<IPostModel[]>;
-  getByIdWithUser(id: string): Promise<IPostModel>;
   getPostsByUser(id: string): Promise<IPostModel[]>;
   updateAvaliation(id: string): Promise<IPostModel>;
   postLike(id:string,user_id:string): Promise<IPostModel>;

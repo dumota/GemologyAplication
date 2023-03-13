@@ -1,4 +1,5 @@
 import { json } from "body-parser";
+import  mongoose  from "mongoose";
 import { IPostModel } from "../../../../Database/Mongo_Db/ISchemas/IPostModel";
 import PostModel from "../../../../Database/Mongo_Db/schemas/PostModel";
 import { AppError } from "../../../../errors/AppError";
@@ -88,14 +89,56 @@ export class PostRepository implements IPostRepository {
   }
 
 
-  getByIdWithUser(id: string): Promise<IPostModel> {
-    throw new Error("Method not implemented.");
-  }
+ 
 
 
   async getPostsByUser(id: string): Promise<IPostModel[]> {
-    const postsByUser = await PostModel.find({user:id})
-    return postsByUser;
+    // const postsByUser = await PostModel.find({user:id})
+    // return postsByUser;
+
+    const data = await PostModel.aggregate([
+      {
+        $facet: {
+            totalData: [
+                { $match: { user: mongoose.Types.ObjectId(id) } },
+                {
+                    $lookup: {
+                        from: 'users',
+                        let: { user_id: "$user" },
+                        pipeline: [
+                            { $match: { $expr: { $eq: ["$_id", "$$user_id"] } } },
+                            { $project: { password: 0 } }
+                        ],
+                        as: "user"
+                    }
+                },
+                { $unwind: "$user" },
+                { $sort: { createdAt: -1 } },
+               
+            ],
+            totalCount: [
+                {
+                    $match:
+                    {
+                        user: mongoose.Types.ObjectId(id)
+                    }
+                },
+                { $count: 'count' }
+
+            ]
+        }
+
+    },
+
+    {
+        $project: {
+            count: { $arrayElemAt: ["$totalCount.count", 0] },
+            totalData: 1
+        }
+    }
+    ])
+
+    return data;
   }
 
   async updateAvaliation(id: string): Promise<IPostModel> {
